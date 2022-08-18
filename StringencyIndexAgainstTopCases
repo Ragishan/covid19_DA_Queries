@@ -1,0 +1,9 @@
+ """Matching the stringency index against states with top new cases"""
+ 
+ SELECT SUM(new_confirmed) new_case_2022 ,subregion1_name, stringency_index, facial_coverings
+      FROM `bigquery-public-data.covid19_open_data.covid19_open_data` 
+      
+WHERE date > '2021-12-31' AND country_name = 'India' AND subregion1_name NOT NULL AND stringency_index NOT NULL and facial_cover NOT NULL
+      
+      GROUP BY 2,3,4
+      ORDER BY 1 DESC
