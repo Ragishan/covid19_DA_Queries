@@ -1,0 +1,21 @@
+""" Checking the states where Temparature increase OR use of masks was the reason for increase in cases during the year 2022 """
+
+WITH t1 AS (
+      SELECT DISTINCT subregion1_name
+      FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
+      WHERE (select SUM(new_confirmed) from `bigquery-public-data.covid19_open_data.covid19_open_data` 
+            where date > '2021-04-30' and date < '2021-12-31') < (select SUM(new_confirmed) from `bigquery-public-data.covid19_open_data.covid19_open_data` 
+            where  date > '2021-12-31')
+           GROUP BY 1),
+
+
+t2 AS (
+      SELECT DISTINCT subregion1_name 
+      FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
+      WHERE ((maximum_temperature_celsius - minimum_temperature_celsius) > 20 OR facial_coverings < 3)  AND country_name = "India" AND date >   '2021-12-31' 
+      GROUP BY 1)
+
+SELECT t1.subregion1_name
+FROM t1
+JOIN t2
+ON t1.subregion1_name = t2.subregion1_name
